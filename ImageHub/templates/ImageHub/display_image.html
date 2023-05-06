@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{%block content%}
+<div class="container">
+  {%if msg%}
+  <div class="alert alert-success" role="alert">
+    {{msg}}
+  </div>
+  {%endif%}  
+    <table class="table" border="2">
+        <thead>
+          <tr>
+            <th>Sr.No.</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Date</th>
+            <th>Place</th>
+            <th>Image</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%if images%}
+          {% for each in images %}
+            <tr>
+              <td>{{forloop.counter}} </td>
+              <td>{{ each.name }} <small style="font-size: x-small;">({{each.pk}})</small></td>
+              <td>{{ each.time }}</td>
+              <td>{{ each.date }}</td>
+              <td>{{ each.place }}</td>
+              <td><a href="{{ each.image.url }}"><img src="{{ each.image.url }}" alt="{{ each.name }}" class="img-thumbnail" width="100px" height="60px"></a></td>
+              <td><a href="{% url 'update_image' each.pk %}" class="btn btn-primary">Update</a></td>
+              <td><a href="{% url 'delete_image' each.pk %}" class="btn btn-danger">Delete</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {%else%}
+      <h1>No data Found</h1>
+      {%endif%}    
+</div>
+{%endblock%}

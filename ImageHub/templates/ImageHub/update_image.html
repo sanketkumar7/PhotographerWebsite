@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{%block content%}
+<div class="container">
+    <form method="POST" enctype="multipart/form-data">
+    <h1>Update Image</h1>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Update Image">
+        <a href="{% url 'display_images' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{%endblock%}

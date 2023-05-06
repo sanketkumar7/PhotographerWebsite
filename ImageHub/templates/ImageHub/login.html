@@ -1,0 +1,21 @@
+{%extends 'base.html'%}
+{%block title%}
+    <title>
+        Login
+    </title>
+{%endblock%}
+{%block content%}
+<div class="container">
+        <div class="card-body">
+            <h4 class="card-title">Login</h4>
+            <p class="card-text">Enter your credentials:</p>
+            <form method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit" name="btn" class="btn btn-primary btn-block">Login</button>
+                <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}
