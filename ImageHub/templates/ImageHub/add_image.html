@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
 {%block content%}
-<div class="container">
-    <form method="POST" enctype="multipart/form-data">
-    <h1>Add Image</h1>
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Add Image">
-    </form>
-</div>
+
+{%if msg%}
+  <div class="alert alert-success" role="alert">
+    {{msg}}
+  </div>
+  {%endif%}
+  <div class="container">
+    <h1 style="text-align: center;">Add Image</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% csrf_token %}
+            {{form.as_p}}
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
 {%endblock%}

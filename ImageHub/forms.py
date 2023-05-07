@@ -33,7 +33,11 @@ class user_signup_form(forms.ModelForm):
 '''Image form'''
 class add_image_form(forms.ModelForm):
     '''Field definitions'''
-    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date'}),initial=now().date())
+    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}),initial=now().time())
+    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),initial=now().date())
+    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    image=forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control'}))
     '''Image validation'''
     def clean(self):
         cleaned_data=super().clean()

@@ -1,42 +1,78 @@
 {% extends 'base.html' %}
+
 {%block content%}
-<div class="container">
   {%if msg%}
   <div class="alert alert-success" role="alert">
     {{msg}}
   </div>
-  {%endif%}  
-    <table class="table" border="2">
-        <thead>
-          <tr>
-            <th>Sr.No.</th>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Date</th>
-            <th>Place</th>
-            <th>Image</th>
-            <th>Update</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%if images%}
-          {% for each in images %}
+  {%endif%}
+  <div class="container">
+    <form method="post" action="{% url 'delete_images' %}">
+      {% csrf_token %}
+      <table class="table" border="2">
             <tr>
-              <td>{{forloop.counter}} </td>
-              <td>{{ each.name }} <small style="font-size: x-small;">({{each.pk}})</small></td>
-              <td>{{ each.time }}</td>
-              <td>{{ each.date }}</td>
-              <td>{{ each.place }}</td>
-              <td><a href="{{ each.image.url }}"><img src="{{ each.image.url }}" alt="{{ each.name }}" class="img-thumbnail" width="100px" height="60px"></a></td>
-              <td><a href="{% url 'update_image' each.pk %}" class="btn btn-primary">Update</a></td>
-              <td><a href="{% url 'delete_image' each.pk %}" class="btn btn-danger">Delete</a></td>
+              <th>Sr.No.</th>
+              <th>Name</th>
+              <th>Time</th>
+              <th>Date</th>
+              <th>Place</th>
+              <th>Image</th>
+              <th>Update</th>
+              <th style="text-align: center;vertical-align:middle;"><input type="checkbox" class="select-all" style="height: 15px;width: 15px;"></th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            {%if page%}
+            {% for each in page %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{ each.name }} <small style="font-size: x-small;">({{each.pk}})</small></td>
+                <td>{{ each.time }}</td>
+                <td>{{ each.date }}</td>
+                <td>{{ each.place }}</td>
+                <td><a href="{{ each.image.url }}"><img src="{{ each.image.url }}" alt="{{ each.name }}" class="img-thumbnail" width="100px" height="60px"></a></td>
+                <td><a href="{% url 'update_image' each.pk %}" class="btn btn-primary">Update</a></td>
+                <td style="text-align: center;vertical-align:middle;"><input type="checkbox" class="select-item" name="selected_items" value="{{ each.pk }}" style="height: 15px;width: 15px;"></td>
+              </tr>
+            {% endfor %}
+              <tr>
+                  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+                  <td style="text-align: center;vertical-align:middle;"><input type=submit class="btn btn-danger" value="Delete"></td>
+              </tr>
+        </table>
+      </form>
+      <div class="pagination">
+        {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}">previous <small style="padding-left: 5px;"></small></a>
+        {% endif %}
+      
+        {% for num in page.paginator.page_range %}
+        {% if page.number == num %}
+        <span class="current-page">{{ num }}</span>
+        {% else %}
+        <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+      
+        {% if page.has_next %}
+        <a href="?page={{ page.next_page_number }}"> <small style="padding-right: 5px;"></small>  next</a>
+        {% endif %}
+      </div>
+  </div>
       {%else%}
       <h1>No data Found</h1>
-      {%endif%}    
-</div>
+      {%endif%}
+<script>
+          // Get the header checkbox element
+  const selectAllCheckbox = document.querySelector('.select-all');
+
+  // Add a click event listener to the header checkbox
+  selectAllCheckbox.addEventListener('click', () => {
+    // Get all the checkboxes in the table body
+    const itemCheckboxes = document.querySelectorAll('.select-item');
+
+    // Toggle the checked state of each checkbox to match that of the header checkbox
+    itemCheckboxes.forEach((checkbox) => {
+      checkbox.checked = selectAllCheckbox.checked;
+    });
+  });
+</script>  
 {%endblock%}
