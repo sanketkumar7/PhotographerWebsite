@@ -12,6 +12,7 @@ class Image(models.Model):
     date = models.DateField(default=now().date()) 
     place = models.CharField(max_length=255)
     image = models.ImageField(upload_to='images/')
+    views=models.IntegerField(default=0)
 
     def __str__(self):
         return self.name

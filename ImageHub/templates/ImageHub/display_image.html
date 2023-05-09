@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{%load static%}
 {%block content%}
   {%if msg%}
   <div class="alert alert-success" role="alert">
@@ -7,6 +7,16 @@
   </div>
   {%endif%}
   <div class="container">
+    <br>
+      <form class="d-flex tm-search-form">
+          {{myfilter.form}}
+          <span style="margin: 10px;"></span>
+          <button class="btn btn-outline-success tm-search-btn" type="submit">
+              <i class="fas fa-search">Search</i>
+          </button>
+      </form>
+  </div>
+  <br>
     <form method="post" action="{% url 'delete_images' %}">
       {% csrf_token %}
       <table class="table" border="2">
@@ -23,7 +33,11 @@
             {%if page%}
             {% for each in page %}
               <tr>
-                <td>{{forloop.counter}}</td>
+                {%if page.number > 1 %}
+                <td id="sr">{% widthratio page.previous_page_number 1 10|add:forloop.counter%}</td>
+                {%else%}
+                <td >{{forloop.counter}}</td>
+                {%endif%}
                 <td>{{ each.name }} <small style="font-size: x-small;">({{each.pk}})</small></td>
                 <td>{{ each.time }}</td>
                 <td>{{ each.date }}</td>
@@ -46,7 +60,7 @@
       
         {% for num in page.paginator.page_range %}
         {% if page.number == num %}
-        <span class="current-page">{{ num }}</span>
+        <span class="current-page" id="current_page">{{ num }}</span>
         {% else %}
         <a href="?page={{ num }}">{{ num }}</a>
         {% endif %}
@@ -56,6 +70,7 @@
         <a href="?page={{ page.next_page_number }}"> <small style="padding-right: 5px;"></small>  next</a>
         {% endif %}
       </div>
+      <br><br>
   </div>
       {%else%}
       <h1>No data Found</h1>
@@ -74,5 +89,5 @@
       checkbox.checked = selectAllCheckbox.checked;
     });
   });
-</script>  
+</script>
 {%endblock%}

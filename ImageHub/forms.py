@@ -1,7 +1,7 @@
 from django import forms
 from .models import User,Image
 
-from django.utils.timezone import now
+from datetime import datetime
 '''login form'''
 class user_login_form(forms.ModelForm):
     '''Fields definition'''
@@ -34,8 +34,8 @@ class user_signup_form(forms.ModelForm):
 class add_image_form(forms.ModelForm):
     '''Field definitions'''
     name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
-    time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}),initial=now().time())
-    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),initial=now().date())
+    time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}),initial=datetime.now())
+    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),initial=datetime.now())
     place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     image=forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control'}))
     '''Image validation'''
@@ -45,12 +45,16 @@ class add_image_form(forms.ModelForm):
     
     class Meta:
         model=Image
-        fields='__all__'
+        fields=('name','time','date','place','image')
 
     '''Update Image Form'''
 class update_image_form(forms.ModelForm):
     '''Field definitions'''
-    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date'}),label='Old Date')
+    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}))
+    date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),label='Old Date')
+    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    image=forms.ImageField()
     '''Image validation'''
     def clean(self):
         cleaned_data=super().clean()
@@ -58,4 +62,4 @@ class update_image_form(forms.ModelForm):
     
     class Meta:
         model=Image
-        fields='__all__'
+        fields=('name','time','date','place','image')
