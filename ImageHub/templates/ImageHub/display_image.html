@@ -9,7 +9,7 @@
   <div class="container">
     <br>
       <form class="d-flex tm-search-form">
-          {{myfilter.form}}
+        {{myfilter.form.name}}<span style="margin: 5px;"> </span> {{myfilter.form.place}}<span style="margin: 5px;"> </span>{{myfilter.form.date}}<span style="margin: 5px;"> </span>
           <span style="margin: 10px;"></span>
           <button class="btn btn-outline-success tm-search-btn" type="submit">
               <i class="fas fa-search">Search</i>
@@ -20,27 +20,23 @@
     <form method="post" action="{% url 'delete_images' %}">
       {% csrf_token %}
       <table class="table" border="2">
-            <tr>
-              <th>Sr.No.</th>
-              <th>Name</th>
-              <th>Time</th>
-              <th>Date</th>
-              <th>Place</th>
+            <tr style="color: white;">
+              <th style="text-align: center;vertical-align: middle;">Sr.No.</th>
+              <th><a href="/display-images?attribute=name" style="color: yellow;">Name</a></th>
+              <th><a href="/display-images?attribute=time"  style="color: yellow;">Time</a></th>
+              <th><a href="/display-images?attribute=date" style="color: yellow;">Date</a></th>
+              <th><a href="/display-images?attribute=place" style="color: yellow;">Place</a></th>
               <th>Image</th>
               <th>Update</th>
               <th style="text-align: center;vertical-align:middle;"><input type="checkbox" class="select-all" style="height: 15px;width: 15px;"></th>
             </tr>
             {%if page%}
             {% for each in page %}
-              <tr>
-                {%if page.number > 1 %}
-                <td id="sr">{% widthratio page.previous_page_number 1 10|add:forloop.counter%}</td>
-                {%else%}
-                <td >{{forloop.counter}}</td>
-                {%endif%}
+              <tr style="color: white;">
+                <td style="text-align: center;vertical-align: middle;">{{srno|add:forloop.counter}}</td>
                 <td>{{ each.name }} <small style="font-size: x-small;">({{each.pk}})</small></td>
-                <td>{{ each.time }}</td>
-                <td>{{ each.date }}</td>
+                <td>{{ each.time}}</td>
+                <td>{{ each.date|date:'d M Y' }}</td>
                 <td>{{ each.place }}</td>
                 <td><a href="{{ each.image.url }}"><img src="{{ each.image.url }}" alt="{{ each.name }}" class="img-thumbnail" width="100px" height="60px"></a></td>
                 <td><a href="{% url 'update_image' each.pk %}" class="btn btn-primary">Update</a></td>
@@ -55,13 +51,16 @@
       </form>
       <div class="pagination">
         {% if page.has_previous %}
-        <a href="?page={{ page.previous_page_number }}">previous <small style="padding-left: 5px;"></small></a>
+        <p style="padding-right: 6in;"></p><a href="?page={{ page.previous_page_number }}">previous <small style="padding-left: 5px;"></small></a>
+        {%else%}
+                <p style="padding-right: 7in;"></p>
         {% endif %}
       
         {% for num in page.paginator.page_range %}
         {% if page.number == num %}
-        <span class="current-page" id="current_page">{{ num }}</span>
+        <span class="current-page" id="current_page" style="color: white;">{{ num }}</span>
         {% else %}
+        <p style="padding-right: 5px;"></p>
         <a href="?page={{ num }}">{{ num }}</a>
         {% endif %}
         {% endfor %}

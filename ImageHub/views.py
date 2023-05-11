@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+
+from django.db.models.functions import Lower
 
 from PIL import Image as Img
 
@@ -8,7 +9,7 @@ from .forms import user_login_form, user_signup_form, add_image_form,update_imag
 
 from .models import User,Image
 
-import os,time
+import os
 
 from .filters import image_filter
 # Create your views here.
@@ -20,6 +21,7 @@ def check_session(function):
     return wrapper
 
 def user_login_view(request):       #Login
+    msg=request.GET.get('data','')
     if 'UserIsActive' in request.session:
         return redirect('add_image')
     form=user_login_form
@@ -27,14 +29,10 @@ def user_login_view(request):       #Login
         form=user_login_form(request.POST)
         if form.is_valid():
             username=form.cleaned_data['username']
-            password=form.cleaned_data['password']
-            if User.objects.filter(username=username,password=password).exists():
-                request.session['UserIsActive']=username
-                request.session.set_expiry(0)
-                return redirect('add_image')
-            else:
-                return HttpResponse('Failed')
-    return render(request,'ImageHub/login.html',{'form':form})
+            request.session['UserIsActive']=username
+            request.session.set_expiry(0)
+            return redirect('add_image')
+    return render(request,'ImageHub/login.html',{'form':form,'msg':msg})
 
 def user_logout_view(request):
     if 'UserIsActive' in request.session:
@@ -47,8 +45,10 @@ def user_signup_view(request):      #Signup
         form=user_signup_form(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            username=form.cleaned_data['username']
+            return redirect(f'/login?data=Registration of {username} is Successfully.')
     return render(request,'ImageHub/signup.html',{'form':form})
+
 @check_session
 def add_image_view(request):    #adding new Image
     msg=''
@@ -58,18 +58,51 @@ def add_image_view(request):    #adding new Image
         if form.is_valid():
             form.save()
             msg=f"Image {form.cleaned_data['name']} added at {form.cleaned_data['time']} on {form.cleaned_data['date']}."
+            form=add_image_form
     return render(request,'ImageHub/add_image.html',{'form':form,'msg':msg})
 
 @check_session
 def display_image_view(request):
     msg=request.GET.get('data','')
-    images=Image.objects.all()
+    #function to sort images as per requirement.
+    def sorted_images(request):
+        attribute=request.GET.get('attribute','')
+        session_attribute=request.session.get('session_attribute','')
+        sort_order=request.session.get('sort_order','desc')
+            
+        if attribute=='Images':
+            request.session['session_attribute']=''
+            sorted_images=Image.objects.all()
+        elif attribute:
+            if sort_order=='desc' or attribute!=session_attribute:
+                sort_order='asc'
+                sorted_images=Image.objects.all().order_by(Lower(attribute))
+            elif sort_order=='asc':
+                sort_order='desc'
+                sorted_images=Image.objects.all().order_by('-'+Lower(attribute))
+            request.session['sort_order']=sort_order
+            request.session['session_attribute']=attribute
+        else:
+            if session_attribute:
+                if sort_order=='asc':
+                    sorted_images=Image.objects.all().order_by(Lower(session_attribute))
+                else:
+                    sorted_images=Image.objects.all().order_by('-'+Lower(session_attribute))
+            else:
+                sorted_images=Image.objects.all()
+        return sorted_images
+    images=sorted_images(request)
     myfilter=image_filter(request.GET,queryset=images)
-    images=myfilter.qs
-    paginator = Paginator(images, 10)
+    if len(myfilter.qs)!=0 and len(images)!=len(myfilter.qs):
+        images=myfilter.qs
+        paginator = Paginator(images, len(myfilter.qs)+5)
+    else:
+        images=myfilter.qs
+        paginator = Paginator(images,10)
     page_number = request.GET.get('page', 1)
     page = paginator.get_page(page_number)
-    return render(request,'ImageHub/display_image.html',{'page':page,'msg':msg,'myfilter':myfilter})
+    srno=(int(page_number)-1)*10    # use to forward srno
+    return render(request,'ImageHub/display_image.html',{'page':page,'msg':msg,'myfilter':myfilter,'srno':srno})
 
 @check_session
 def update_image_view(request,pk):

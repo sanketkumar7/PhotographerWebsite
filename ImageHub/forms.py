@@ -11,6 +11,11 @@ class user_login_form(forms.ModelForm):
     '''login form Validation'''
     def clean(self):
         cleaned_data=super().clean()
+        username=self.cleaned_data['username']
+        password=self.cleaned_data['password']
+        
+        if not User.objects.filter(username=username,password=password).exists():
+            self.add_error('username','Invalid Username or Password.')
         return cleaned_data
     class Meta:
         model=User
@@ -21,11 +26,20 @@ class user_signup_form(forms.ModelForm):
     username=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     first_name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     last_name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    master_key=forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
     password=forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
     confirm_password=forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
     '''signup form Validation'''
     def clean(self):
         cleaned_data=super().clean()
+        master_key=self.cleaned_data['master_key']
+        pass1=self.cleaned_data['password']
+        pass2=self.cleaned_data['confirm_password']
+
+        if master_key not in ['12345','54321']:
+            self.add_error('master_key','Invalid Master Key, Please contact Developer.')
+        if pass1!=pass2:
+            self.add_error('confirm_password',"Password didn't match.")
         return cleaned_data
     class Meta:
         model=User

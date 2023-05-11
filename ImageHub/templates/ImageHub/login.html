@@ -5,10 +5,15 @@
     </title>
 {%endblock%}
 {%block content%}
-<div class="container">
+{%if msg%}
+  <div class="alert alert-success" role="alert">
+    {{msg}}
+  </div>
+  {%endif%}
+<div class="container" style="color: white;">
         <div class="card-body">
             <h4 class="card-title">Login</h4>
-            <p class="card-text">Enter your credentials:</p>
+            <p class="card-text">Enter your credentials...</p>
             <form method="POST">
                 {% csrf_token %}
                 {{form.as_p}}

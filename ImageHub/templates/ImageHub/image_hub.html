@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/templatemo-style.css' %}">
+    <style>
+        .tm-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .tm-gallery .col-xl-3 {
+    flex-basis: calc(25% - 15px);
+    margin-bottom: 30px;
+  }
+  .tm-gallery img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: fill;
+  }
+      </style>
 </head>
 <body>
     <!-- Page Loader -->
@@ -57,7 +73,7 @@
             </h2>
             <div class="col-6 d-flex justify-content-end align-items-center">
                 <form action="" method="get" class="tm-text-primary" id="page-form">
-                    Page <input type="submit" value="{{page.number}}" size="1" class="tm-input-paging tm-text-primary" id="page-input"> of {{page.paginator.num_pages}}
+                    Page <input type="text" value="{{page.number}}" size="1" class="tm-input-paging tm-text-primary" name="page"> of {{page.paginator.num_pages}}
                 </form>
             </div>
         </div>
@@ -66,7 +82,7 @@
                 {%for each in page%}
                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
                     <figure class="effect-ming tm-video-item">
-                        <img src="{{each.image.url}}" alt="Image" class="img-fluid">
+                        <img src="{{each.image.url}}" alt="Image" class="img-fluid " >
                         <figcaption class="d-flex align-items-center justify-content-center">
                             <h2> {{each.name}} </h2>
                             <a href="{% url 'image_detail' each.pk %}">View more</a>
@@ -148,23 +164,6 @@
     <script>
         $(window).on("load", function() {
             $('body').addClass('loaded');
-        });
-        // Get the form and input elements
-        const form = document.getElementById('page-form');
-        const input = document.getElementById('page-input');
-        
-        // Listen to the "Enter" key press event
-        input.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                // Build the new URL with the page number
-                const page = input.value;
-                const url = window.location.href.split('?')[0] + `?page=${page}`;
-                
-                // Update the form's "action" attribute and submit the form
-                console.log(url)
-                form.action = url;
-                form.submit();
-            }
         });
         </script>    
 </body>
