@@ -139,8 +139,12 @@ def delete_images_view(request):        #deleting multiple images.
 def image_hub_view(request):
     images=Image.objects.all().order_by('-date','-time')
     myfilter=image_filter(request.GET,queryset=images)
-    images=myfilter.qs
-    paginator = Paginator(images, 12)
+    if len(myfilter.qs)!=0 and len(images)!=len(myfilter.qs):
+        images=myfilter.qs
+        paginator = Paginator(images, len(myfilter.qs)+5)
+    else:
+        images=myfilter.qs
+        paginator = Paginator(images,12)
     page_number = request.GET.get('page', 1)
     page = paginator.get_page(page_number)
     return render(request,'ImageHub/image_hub.html',{'page':page,'myfilter':myfilter})

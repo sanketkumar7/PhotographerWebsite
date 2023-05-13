@@ -24,7 +24,8 @@ class Image(models.Model):
     time = models.TimeField(default=now().time())
     date = models.DateField(default=now().date()) 
     place = models.CharField(max_length=255,validators=[RegexValidator('^(?=.*[A-Za-z]{3})[A-Za-z0-9]{3,30}$',message='Only alphanumeric values are allowed.')])
-    image = models.ImageField(upload_to=image_upload_path,validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png']),MinFileSizeValidator(1024*10,message='File size should be at least 10kb'),MaxFileSizeValidator(1024*1024*10,message='File size should not exceed 10mb.')])
+    #image = models.ImageField(upload_to=image_upload_path,validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png']),MinFileSizeValidator(1024*10,message='File size should be at least 10kb'),MaxFileSizeValidator(1024*1024*10,message='File size should not exceed 10mb.')])
+    image = models.ImageField(upload_to=image_upload_path)
     views=models.IntegerField(default=0)
     def __str__(self):
         return self.name
