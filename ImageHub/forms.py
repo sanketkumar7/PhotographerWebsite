@@ -36,7 +36,7 @@ class user_signup_form(forms.ModelForm):
         pass1=self.cleaned_data['password']
         pass2=self.cleaned_data['confirm_password']
 
-        if master_key not in ['12345','54321']:
+        if master_key not in ['Manasvi-12345','1234567890']:
             self.add_error('master_key','Invalid Master Key, Please contact Developer.')
         if pass1!=pass2:
             self.add_error('confirm_password',"Password didn't match.")
