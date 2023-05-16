@@ -47,10 +47,10 @@ class user_signup_form(forms.ModelForm):
 '''Image form'''
 class add_image_form(forms.ModelForm):
     '''Field definitions'''
-    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control',"onblur":"this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();"}))
     time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}),initial=datetime.now())
     date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),initial=datetime.now())
-    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control',"onblur":"this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();"}))
     image=forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control'}))
     '''Image validation'''
     def clean(self):
@@ -64,10 +64,10 @@ class add_image_form(forms.ModelForm):
     '''Update Image Form'''
 class update_image_form(forms.ModelForm):
     '''Field definitions'''
-    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    name=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control',"onblur":"this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();"}))
     time=forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control'}))
     date=forms.DateField(widget=forms.DateInput(attrs={'type':'date','class':'form-control'}),label='Old Date')
-    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    place=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control',"onblur":"this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();"}))
     image=forms.ImageField()
     '''Image validation'''
     def clean(self):

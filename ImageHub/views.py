@@ -3,8 +3,6 @@ from django.core.paginator import Paginator
 
 from django.db.models.functions import Lower
 
-from django.views.decorators.http import require_safe
-
 from PIL import Image as Img
 
 from .forms import user_login_form, user_signup_form, add_image_form,update_image_form
@@ -51,7 +49,6 @@ def user_signup_view(request):      #Signup
             return redirect(f'/login?data=Registration of {username} is Successfully.')
     return render(request,'ImageHub/signup.html',{'form':form})
 
-@require_safe
 @check_session
 def add_image_view(request):    #adding new Image
     msg=''
@@ -64,7 +61,6 @@ def add_image_view(request):    #adding new Image
             form=add_image_form
     return render(request,'ImageHub/add_image.html',{'form':form,'msg':msg})
 
-@require_safe
 @check_session
 def display_image_view(request):
     msg=request.GET.get('data','')
@@ -108,7 +104,6 @@ def display_image_view(request):
     srno=(int(page_number)-1)*10    # use to forward srno
     return render(request,'ImageHub/display_image.html',{'page':page,'msg':msg,'myfilter':myfilter,'srno':srno})
 
-@require_safe
 @check_session
 def update_image_view(request,pk):
     image=Image.objects.get(pk=pk)
@@ -124,7 +119,6 @@ def update_image_view(request,pk):
             return redirect(f'/display-images?data={image.name}({pk}) Updated.')
     return render(request,'ImageHub/update_image.html',{'form':form})
 
-@require_safe
 @check_session
 def delete_images_view(request):        #deleting multiple images.
     data=[]
@@ -142,7 +136,6 @@ def delete_images_view(request):        #deleting multiple images.
         return redirect(f'/display-images?data=Item - '+(', ').join(data)+' Deleted.')
     return redirect(f'/display-images?data=0 Items '+(', ').join(data)+' Deleted.')
 
-@require_safe
 def image_hub_view(request):
     images=Image.objects.all().order_by('-date','-time')
     myfilter=image_filter(request.GET,queryset=images)
@@ -156,7 +149,6 @@ def image_hub_view(request):
     page = paginator.get_page(page_number)
     return render(request,'ImageHub/image_hub.html',{'page':page,'myfilter':myfilter})
 
-@require_safe
 def image_detail_view(request,pk):
     image_obj=Image.objects.get(pk=pk)
     image_obj.views+=1
