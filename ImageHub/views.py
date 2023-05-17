@@ -164,6 +164,7 @@ def image_detail_view(request,pk):
         'image_obj':image_obj,
         'PIL_image':PIL_image,
         'page':page,
+        'image_obj_image_name':image_obj.image.name.split('/')[1]
     }
     return render(request,'ImageHub/image_detail.html',context=context)
 
